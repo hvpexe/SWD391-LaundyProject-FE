@@ -2,6 +2,7 @@ import InputField from "components/fields/InputField";
 import Checkbox from "components/checkbox";
 import {getList} from "apiServices/userApi"
 import {loginUser} from "apiServices/auth"
+import { Link } from 'react-router-dom';
 export default function SignIn() {
 
   const fetchApi = async () => {
@@ -54,6 +55,7 @@ export default function SignIn() {
           Sign In
         </button>
       </div>
+      <Link to="/auth/sign-up">Go to Login</Link>
     </div>
   );
 }
