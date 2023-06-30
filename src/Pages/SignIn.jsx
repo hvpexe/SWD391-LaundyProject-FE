@@ -47,8 +47,11 @@ export const SignIn = () => {
                 onChange={event => password = event.target.value}
               />
             </Form.Group>
+            <p className="forgot-password text-right mt-2">
+              <a href="#"> Forgot password?</a>
+            </p>
             <div className="d-grid gap-2 mt-3">
-              <Button variant="outline-primary" type="submit">
+              <Button variant="dark" type="submit">
                 Submit
               </Button>
             </div>
