@@ -79,7 +79,7 @@ const Customers = () => {
       </InputGroup>
       </Col>
       <Col>
-      <Button size='sm' onClick={handleSearch}  variant= 'dark'> Search </Button>
+      <Button size='sm' onClick={handleSearch}  variant= 'outline-primary'> Search </Button>
       </Col>
       </Row>
       <br />

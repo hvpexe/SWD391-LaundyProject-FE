@@ -101,10 +101,10 @@ function AddCustomerModal() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="outline-secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleSubmit}>
+          <Button variant="outline-primary" onClick={handleSubmit}>
             Save Changes
           </Button>
         </Modal.Footer>

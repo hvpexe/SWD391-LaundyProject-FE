@@ -51,7 +51,7 @@ export const SignIn = () => {
               <a href="#"> Forgot password?</a>
             </p>
             <div className="d-grid gap-2 mt-3">
-              <Button variant="dark" type="submit">
+              <Button variant="outline-primary" type="submit">
                 Submit
               </Button>
             </div>
