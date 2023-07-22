@@ -1,106 +1,116 @@
-import React, { useEffect, useState } from 'react';
-import { GridComponent, ColumnsDirective, ColumnDirective, Page, Selection, Inject, Edit, Toolbar, Sort, Filter } from '@syncfusion/ej2-react-grids';
-import { Form, InputGroup, Row, Col, Button} from 'react-bootstrap';
-import {customersGrid} from '../Data/dummy';
-import {Header} from '../Components';
-import axios from 'axios';
-import AddCustomerModal from '../Components/AddCustomerModal';
+import React, { useEffect, useState } from "react";
+import {
+  GridComponent,
+  ColumnsDirective,
+  ColumnDirective,
+  Page,
+  Selection,
+  Inject,
+  Edit,
+  Toolbar,
+  Sort,
+  Filter,
+} from "@syncfusion/ej2-react-grids";
+import request from "../Utils/request"
+import { customersGrid } from "../Data/dummy";
+import { Header } from "../Components";
+import axios from "axios";
+import AddCustomerModal from "../Components/AddCustomerModal";
 
 const Customers = () => {
   const [customersData, setCustomersData] = useState([]);
 
-  let email = ''
-  let fullName = ''
+  let searchValue = "";
 
   useEffect(() => {
-    console.log('first time');
-    const token = localStorage.getItem('token'); // Retrieve the JWT token from local storage
-    const header = { headers: { Authorization: `Bearer ${token}` } }; // Create the authorization header
-  
-    axios.get('http://flaundry.somee.com/api/v1/Customer/GetAll/0/10', header)
-      .then(response => setCustomersData(response.data.items));
+    request.get('v1/Customer/GetAll/0/100')
+    .then((response) => setCustomersData(response.data.items))
+    .catch(error => console.log(error))
   }, []);
 
-    const handleSearch = async () => {
-      
-    const token = localStorage.getItem('token'); // Retrieve the JWT token from local storage
-    const header = { headers: { Authorization: `Bearer ${token}` } }; // Create the authorization header
-  
-    let sortedData = (await axios.get('http://flaundry.somee.com/api/v1/Customer/GetAll/0/10', header)).data.items;
+  const handleSearch = async () => {
+    let sortedData = (
+      await request.get('v1/Customer/GetAll/0/100')
+    ).data.items;
+    let searchValueLowerCase = searchValue.toLowerCase();
 
-    sortedData = sortedData.filter(item => item.email.includes(email) && item.fullName.includes(fullName));
-    setCustomersData(sortedData)
+    sortedData = sortedData.filter((item) => {
+      return (
+        item.email.toLowerCase().includes(searchValueLowerCase) ||
+        item.fullName.toLowerCase().includes(searchValueLowerCase)
+      );
+    });
+    setCustomersData(sortedData);
+  };
+
+  const handleActionComplete = (args) => {
+    if (args.requestType === "save" && args.action === "add") {
+      console.log(args.data[0]);
+    } else if (args.requestType === "delete") {
+      const customerIds = args.data.map((idx) => idx.customerId); // Assuming there is an 'Id' property in your data
+      customerIds.forEach((idx) =>
+        request.delete('v1/Customer/Delete/' + idx)
+      );
     }
-
-
-    const handleActionComplete = (args) => {
-      if (args.requestType === 'save' && args.action === 'add') {
-        console.log(args.data[0])
-      } else if (args.requestType === 'delete') {
-        const customerIds = args.data.map(idx => idx.customerId); // Assuming there is an 'Id' property in your data
-        
-        //handleDelete(email);
-        const token = localStorage.getItem('token'); // Retrieve the JWT token from local storage
-        const header = { headers: { Authorization: `Bearer ${token}` } }; // Create the authorization header
-        
-        customerIds.forEach((idx) =>
-        axios.delete('http://flaundry.somee.com/api/v1/Customer/Delete/' + idx, header)
-      ) }
-    };
+  };
 
   return (
-    <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-
-
-
+    <div className="mt-8 mx-4 px-10 pt-4 bg-white rounded-3xl">
       <Header category="Page" title="Customers" />
-    <Row>
-      <Col> 
-      <InputGroup size="sm"  className="mb-3">
-        <InputGroup.Text id="basic-addon1">Email</InputGroup.Text>
-        <Form.Control
-          onChange={event => email = event.target.value}
-          placeholder="Email"
-          aria-label="Email"
-          aria-describedby="basic-addon1"
-        />
-      </InputGroup>
-      </Col>
+      <div className="flex justify-around">
+        <span class="input-group">
+          <input
+            type="text"
+            placeholder="Search by email or name"
+            onChange={(event) => (searchValue = event.target.value)}
+            class="input input-bordered bg-transparent border-2 border-accent w-1/2"
+          />
+          <button class="btn btn-square btn-accent" onClick={handleSearch}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </button>
+        </span>
+        <span>
+          <AddCustomerModal />
+        </span>
+      </div>
 
-      <Col> 
-      <InputGroup size="sm"  className="mb-3">
-        <InputGroup.Text id="basic-addon1">Full Name</InputGroup.Text>
-        <Form.Control
-        onChange={event => fullName = event.target.value}
-          placeholder="Full Name"
-          aria-label="Full Name"
-          aria-describedby="basic-addon1"
-        />
-      </InputGroup>
-      </Col>
-      <Col>
-      <Button size='sm' onClick={handleSearch}  variant= 'outline-primary'> Search </Button>
-      </Col>
-      </Row>
-      <br />
-      <GridComponent
-        dataSource={customersData}
-        allowPaging
-        allowSorting
-        toolbar={[ 'Delete']}
-        editSettings={{allowAdding: true, allowDeleting: true, allowEditing: true}}
-        width= 'auto'
-        actionComplete={handleActionComplete}
-      >
-        <ColumnsDirective>
-          {customersGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
-        </ColumnsDirective>
-        <Inject services={[Page,Toolbar, Selection, Edit, Sort, Filter]} />
-      </GridComponent>
-      <br/>
-      <AddCustomerModal/>
+      <div className="py-4">
+        <GridComponent
+          dataSource={customersData}
+          allowPaging
+          allowSorting
+          toolbar={["Delete"]}
+          editSettings={{
+            allowAdding: true,
+            allowDeleting: true,
+            allowEditing: true,
+          }}
+          width="auto"
+          actionComplete={handleActionComplete}
+        >
+          <ColumnsDirective>
+            {customersGrid.map((item, index) => (
+              <ColumnDirective key={index} {...item} />
+            ))}
+          </ColumnsDirective>
+          <Inject services={[Page, Toolbar, Selection, Edit, Sort, Filter]} />
+        </GridComponent>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Customers
+export default Customers;

@@ -11,9 +11,7 @@ module.exports = {
           14: '14px',
         },
         backgroundColor: {
-          'main-bg': '#FAFBFB',
-          'main-dark-bg': '#20232A',
-          'secondary-dark-bg': '#33373E',
+          'main-bg': '#EAEAEA',
           'light-gray': '#F7F7F7',
           'half-transparent': 'rgba(0, 0, 0, 0.5)',
         },
@@ -44,5 +42,5 @@ module.exports = {
         },
       },
     },
-    plugins: [],
+    plugins: [require("daisyui")],
   };
