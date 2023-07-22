@@ -28,7 +28,7 @@ function AddShipperModal(props) {
       .post("v1/Driver/GetListWithFilter/0/100")
       .then((response) => {
         console.log(response.data.items);
-        return props.setShippersData(response.data.items);
+        props.setShippersData(response.data.items);
         })
       .catch((error) => console.log(error));
 
