@@ -25,7 +25,7 @@ function AddCustomerModal() {
       };
     
         const token = localStorage.getItem('token'); // Get the JWT from localStorage
-        const response = await axios.post('http://flaundry.somee.com/api/v1/Customer/Add', data, {
+        const response = await axios.post('https://flaundry.somee.com/api/v1/Customer/Add', data, {
           headers: {
             Authorization: `Bearer ${token}`, // Include the JWT in the request headers
           },
