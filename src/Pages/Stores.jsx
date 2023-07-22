@@ -35,7 +35,7 @@ const Stores = () => {
 
       customerIds.forEach((idx) =>
         axios.delete(
-          "http://flaundry.somee.com/api/v1/Store/DeleteById/" + idx,
+          "https://flaundry.somee.com/api/v1/Store/DeleteById/" + idx,
           header
         )
       );
@@ -48,7 +48,7 @@ const Stores = () => {
 
     let sortedData = (
       await axios.get(
-        "http://flaundry.somee.com/api/v1/Store/GetAll/0/100",
+        "https://flaundry.somee.com/api/v1/Store/GetAll/0/100",
         header
       )
     ).data.items;
@@ -64,7 +64,7 @@ const Stores = () => {
     const header = { headers: { Authorization: `Bearer ${token}` } }; // Create the authorization header
 
     axios
-      .get("http://flaundry.somee.com/api/v1/Store/GetAll/0/100", header)
+      .get("https://flaundry.somee.com/api/v1/Store/GetAll/0/100", header)
       .then((response) => setShopsData(response.data.items));
   }, []);
 
