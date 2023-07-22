@@ -19,7 +19,7 @@ function AddStoreModal(props) {
       };
     
         const token = localStorage.getItem('token'); // Get the JWT from localStorage
-        await axios.post('http://flaundry.somee.com/api/v1/Store/Add', data, {
+        await axios.post('https://flaundry.somee.com/api/v1/Store/Add', data, {
           headers: {
             Authorization: `Bearer ${token}`, // Include the JWT in the request headers
           },
@@ -27,7 +27,7 @@ function AddStoreModal(props) {
 
         const header = { headers: { Authorization: `Bearer ${token}` } }; 
 
-        axios.get('http://flaundry.somee.com/api/v1/Store/GetAll/0/10', header)
+        axios.get('https://flaundry.somee.com/api/v1/Store/GetAll/0/10', header)
           .then(response => props.setShopsData(response.data.items));
 
     handleClose();
