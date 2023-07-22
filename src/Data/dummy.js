@@ -402,6 +402,7 @@ export const customersGrid = [
 ];
 
 export const shippersGrid = [
+  { type: "checkbox", width: "50" },
   {
     field: "driverId",
     headerText: "Driver Id",

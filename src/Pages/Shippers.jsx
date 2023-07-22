@@ -4,22 +4,44 @@ import {
   ColumnsDirective,
   ColumnDirective,
   Page,
+  Resize,
+  Sort,
+  ContextMenu,
+  Filter,
+  Edit,
   Search,
   Inject,
   Toolbar,
 } from "@syncfusion/ej2-react-grids";
 import { useEffect, useState } from "react";
-import {shippersGrid} from  "../Data/dummy";
+import { shippersGrid } from "../Data/dummy";
 import request from "../Utils/request";
-import { employeesData, employeesGrid } from "../Data/dummy";
 import { Header } from "../Components";
 import AddShipperModal from "../Components/AddShipperModal";
 
 const Shippers = () => {
   const [shippersData, setShippersData] = useState([]);
   let searchValue = "";
-  const handleSearch = async () => {}
-  
+  const handleSearch = async () => {
+    let sortedData = (
+      await request.post("v1/Driver/GetListWithFilter/0/100")
+    ).data.items;
+
+    sortedData = sortedData.filter((item) =>
+      item.fullName.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setShippersData(sortedData);
+  };
+
+  const handleActionComplete = (args) => {
+    if (args.requestType === "delete") {
+      const driverIds = args.data.map((idx) => idx.driverId); 
+      driverIds.forEach((idx) =>
+        request.delete(`v1/Driver/DeleteById/${idx}`)
+      );
+    }
+  };
+
   useEffect(() => {
     request
       .post("v1/Driver/GetListWithFilter/0/100")
@@ -70,13 +92,20 @@ const Shippers = () => {
             allowEditing: true,
           }}
           width="auto"
+          actionComplete={handleActionComplete}
         >
           <ColumnsDirective>
             {shippersGrid.map((item, index) => (
               <ColumnDirective key={index} {...item} />
             ))}
           </ColumnsDirective>
-          <Inject services={[Page, Search, Toolbar]} />
+          <Inject services={[Page, Search, Toolbar,
+            Resize,
+            Sort,
+            ContextMenu,
+            Filter,
+            Edit,
+          ]} />
         </GridComponent>
       </div>
     </div>
