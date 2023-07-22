@@ -3,34 +3,35 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import request from "../Utils/request";
-function AddCustomerModal(props) {
+
+function AddShipperModal(props) {
   const [show, setShow] = useState(false);
+  let fullName = "";
   let email = "";
-  let firstName = "";
-  let lastName = "";
+  let password = "";
   let phoneNumber = "";
-  let address = "";
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleSubmit = async () => {
     const data = {
+      fullName,
       email,
-      fullName: firstName + " " + lastName,
-
+      password,
       phoneNumber,
-      address,
     };
-    await request.post("v1/Customer/Add", data);
+    request
+      .post("v1/Driver/Register", data)
+      .catch((error) => console.log(error));
 
     request
-      .get("v1/Customer/GetAll/0/100")
+      .post("v1/Driver/GetListWithFilter/0/100")
       .then((response) => {
-        console.log(props);
         console.log(response.data.items);
-        props.setCustomersData(response.data.items);
-        });
-      
+        return props.setShippersData(response.data.items);
+        })
+      .catch((error) => console.log(error));
+
     handleClose();
   };
 
@@ -42,10 +43,19 @@ function AddCustomerModal(props) {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title> Add Customer </Modal.Title>
+          <Modal.Title> Add Shipper </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
+            <Form.Group controlId="formName">
+              <Form.Label>Full Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter full name"
+                onChange={(e) => (fullName = e.target.value)}
+              />
+            </Form.Group>
+
             <Form.Group controlId="formEmail">
               <Form.Label>Email</Form.Label>
               <Form.Control
@@ -55,39 +65,21 @@ function AddCustomerModal(props) {
               />
             </Form.Group>
 
-            <Form.Group controlId="formFirstName">
-              <Form.Label>First Name</Form.Label>
+            <Form.Group controlId="formPassword">
+              <Form.Label>Password</Form.Label>
               <Form.Control
-                type="text"
-                placeholder="Enter first name"
-                onChange={(e) => (firstName = e.target.value)}
+                type="password"
+                placeholder="Enter password"
+                onChange={(e) => (password = e.target.value)}
               />
             </Form.Group>
 
-            <Form.Group controlId="formLastName">
-              <Form.Label>Last Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter last name"
-                onChange={(e) => (lastName = e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="formPhoneNumber">
+            <Form.Group controlId="formPhone">
               <Form.Label>Phone Number</Form.Label>
               <Form.Control
-                type="tel"
-                placeholder="Enter phone number"
+                type="text"
+                placeholder="Enter Phone Number"
                 onChange={(e) => (phoneNumber = e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="formAddress">
-              <Form.Label>Address</Form.Label>
-              <Form.Control
-                as="textarea"
-                placeholder="Enter address"
-                onChange={(e) => (address = e.target.value)}
               />
             </Form.Group>
           </Form>
@@ -105,4 +97,4 @@ function AddCustomerModal(props) {
   );
 }
 
-export default AddCustomerModal;
+export default AddShipperModal;

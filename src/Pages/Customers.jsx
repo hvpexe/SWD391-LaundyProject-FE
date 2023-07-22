@@ -83,7 +83,7 @@ const Customers = () => {
           </button>
         </span>
         <span>
-          <AddCustomerModal />
+          <AddCustomerModal setCustomersData={setCustomersData}/>
         </span>
       </div>
 

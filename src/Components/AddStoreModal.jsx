@@ -1,38 +1,30 @@
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import axios from 'axios';
+import { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
+import request from "../Utils/request";
 
 function AddStoreModal(props) {
   const [show, setShow] = useState(false);
-  let storeName = ''
-  let storeAddress = ''
+  let storeName = "";
+  let storeAddress = "";
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleSubmit = async () => {
-    
     const data = {
       storeName,
-      storeAddress
-      };
-    
-        const token = localStorage.getItem('token'); // Get the JWT from localStorage
-        await axios.post('https://flaundry.somee.com/api/v1/Store/Add', data, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include the JWT in the request headers
-          },
-        });
-
-        const header = { headers: { Authorization: `Bearer ${token}` } }; 
-
-        axios.get('https://flaundry.somee.com/api/v1/Store/GetAll/0/10', header)
-          .then(response => props.setShopsData(response.data.items));
+      storeAddress,
+    };
+    await request.post("v1/Store/Add", data);
+    request.get("v1/Store/GetAll/0/100")
+    .then((response) => {
+      console.log(response.data.items);
+      props.setShopsData(response.data.items);
+    })
 
     handleClose();
   };
-
 
   return (
     <>
@@ -60,7 +52,6 @@ function AddStoreModal(props) {
               <Form.Control
                 type="text"
                 placeholder="Enter store address"
-              
                 onChange={(e) => (storeAddress = e.target.value)}
               />
             </Form.Group>

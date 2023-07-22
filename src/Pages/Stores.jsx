@@ -14,7 +14,7 @@ import {
   Inject,
 } from "@syncfusion/ej2-react-grids";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import request from "../Utils/request";
 import { ordersData, contextMenuItems, storesGrid } from "../Data/dummy";
 import { Header } from "../Components";
 import AddStoreModal from "../Components/AddStoreModal";
@@ -29,28 +29,15 @@ const Stores = () => {
       console.log(args.data[0]);
     } else if (args.requestType === "delete") {
       const customerIds = args.data.map((idx) => idx.storeId); // Assuming there is an 'Id' property in your data
-
-      const token = localStorage.getItem("token"); // Retrieve the JWT token from local storage
-      const header = { headers: { Authorization: `Bearer ${token}` } }; // Create the authorization header
-
       customerIds.forEach((idx) =>
-        axios.delete(
-          "https://flaundry.somee.com/api/v1/Store/DeleteById/" + idx,
-          header
-        )
+        request.delete(`v1/Store/DeleteById/${idx}`)
       );
     }
   };
 
   const handleSearch = async () => {
-    const token = localStorage.getItem("token"); // Retrieve the JWT token from local storage
-    const header = { headers: { Authorization: `Bearer ${token}` } }; // Create the authorization header
-
     let sortedData = (
-      await axios.get(
-        "https://flaundry.somee.com/api/v1/Store/GetAll/0/100",
-        header
-      )
+      await request.get("v1/Store/GetAll/0/100")
     ).data.items;
 
     sortedData = sortedData.filter((item) =>
@@ -60,12 +47,8 @@ const Stores = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token"); // Retrieve the JWT token from local storage
-    const header = { headers: { Authorization: `Bearer ${token}` } }; // Create the authorization header
-
-    axios
-      .get("https://flaundry.somee.com/api/v1/Store/GetAll/0/100", header)
-      .then((response) => setShopsData(response.data.items));
+    request.get("v1/Store/GetAll/0/100")
+    .then((response) => setShopsData(response.data.items));
   }, []);
 
   return (
